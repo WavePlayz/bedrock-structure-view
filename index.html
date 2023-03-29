@@ -19,11 +19,14 @@ html, body {
 	padding: 0;
 }
 
+textarea {
+	width: 100%;
+	height: 50vh;
+}
+
 </style>
 
 <script src="pnbt.js"></script>
-<script src="./bund.js"></script>
-<script src="./gl-matrix-min.js"></script>
 
 </head>
 <body>
@@ -38,7 +41,11 @@ html, body {
 	multiple
 ></input>
 
-<textarea id="result"></textarea>
+<textarea 
+	id="result" 
+	placeholder="none"
+	>
+</textarea>
 
 <script>
 /*  Helper functions
