@@ -150,21 +150,6 @@ function mapNBT (data) {
 
 function onNBTJSONLoad (data) {
 try {
-	let { size, structure } = data
-	let [ sx, sy, sz ] = size
-	let { block_indices, palette } = structure
-	
-	data = block_indices[0].map( (v, i) => {
-		let [ x, y, z ] = [ i/sy/sz, i/sz%sy, i%sy ].map(Math.floor)
-		
-		let { name, states, version } = palette.default.block_palette[v] ?? {}
-		let game = version?.toString(16).padStart(8,0).match(/../g).map(v => parseInt(v,16) )
-		return {
-			position: { x, y, z },
-			name, states, game, v:palette.default.block_indice
-		}
-	})
-
 	document.write( JSON.stringify( data ) )
 } catch (error) {
 	alert( error )
