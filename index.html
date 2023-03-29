@@ -110,13 +110,14 @@ async function getNBTJSON (data) {
 }
 
 function onFileUpload (elem) {
+try {
 	let [ file0 ] = elem.files
 	
 	let fileReader = new FileReader()
 
 	fileReader.onload = async function (e) {
 		let nbtJSON = await getNBTJSON( e.target.result )
-		let nbtJSONTrim = trimNBTJSON( nbtJSONRaw ) 
+		let nbtJSONTrim = trimNBTJSON( nbtJSON ) 
 		
 		//console.log( nbtJSON )
 		
@@ -125,6 +126,10 @@ function onFileUpload (elem) {
 
 	fileReader.readAsArrayBuffer(file0)
 
+} catch (error) {
+	alert( error )
+}
+
 }
 
 </script>
@@ -132,6 +137,7 @@ function onFileUpload (elem) {
 <script>
 
 function onNBTJSONLoad (data) {
+	console.log(393)
 	result.value = JSON.stringify( data, null, "\n" )
 }
 
