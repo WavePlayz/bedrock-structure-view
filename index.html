@@ -1,7 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-
+<meta charset="UTF-8">
+<meta 
+	name="viewport" 
+	content="width=device-width, initial-scale=1.0"
+	>
+<meta 
+	http-equiv="X-UA-Compatible" 
+	content="ie=edge"
+	>
 <meta 
 	http-equiv="Content-Type" 
 	content="text/html; charset=utf-8"
@@ -51,25 +59,8 @@ textarea {
 /*  Helper functions
  */
  
-function getTexture (name) {
-	let textures = blocks_textures[ name ]?.textures
-	
-	if (typeof textures == "object") {
-		textures = textures.side || textures.up
-	}
-	
-	let data = blocks_terrain.texture_data[ textures ]?.textures
-	
-	if (Array.isArray(data) ) data = data?.[0];
-	
-	if (typeof data == "object") data = data?.path;
-	
-	let texture = data?.split('/').pop()
-	
-	return texture || "missing_texture"
-}
-
 function trimNBTJSON (data) {
+try {
 	let out = data
 	
 	if (data.value) {
@@ -87,6 +78,9 @@ function trimNBTJSON (data) {
 	}
 	
 	return out
+} catch (error) {
+	alert( error )
+}
 }
 </script>
 
@@ -96,6 +90,7 @@ const nbt = require("prismarine-nbt")
 const { Buffer } = require("buffer")
 
 async function getNBTJSON (data) {
+try {
 	let buffer = Buffer.from(data)
 	let value = await nbt.parse(buffer)
 	
@@ -107,6 +102,9 @@ async function getNBTJSON (data) {
 	}
 	
 	return parsed
+} catch (error) {
+	alert( error )
+}
 }
 
 function onFileUpload (elem) {
@@ -137,8 +135,11 @@ try {
 <script>
 
 function onNBTJSONLoad (data) {
-	console.log(393)
-	result.value = JSON.stringify( data, null, "\n" )
+try {
+	result.value = JSON.stringify( data, null, "  " )
+} catch (error) {
+	alert( error )
+}
 }
 
 </script>
