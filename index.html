@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta 
+	http-equiv="Content-Type" 
+	content="text/html; charset=utf-8"
+	/>
+	
+<title>Bedrock Structure - WavePlayz</title>
+
+<style>
+
+html, body {
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+</style>
+
+<script src="pnbt.js"></script>
+<script src="./bund.js">
+<script src="./gl-matrix-min.js">
+
+</head>
+<body>
+
+<input 
+	id="files" 
+	type="file" 
+	onchange="onFileUpload(this)" 
+	name="files[]"
+	multiple
+></input>
+
+<textarea id="result"></textarea>
+
+<script>
+/*  Helper functions
+ */
+ 
+function getTexture (name) {
+	let textures = blocks_textures[ name ]?.textures
+	
+	if (typeof textures == "object") {
+		textures = textures.side || textures.up
+	}
+	
+	let data = blocks_terrain.texture_data[ textures ]?.textures
+	
+	if (Array.isArray(data) ) data = data?.[0];
+	
+	if (typeof data == "object") data = data?.path;
+	
+	let texture = data?.split('/').pop()
+	
+	return texture || "missing_texture"
+}
+
+function trimNBTJSON (data) {
+	let out = data
+	
+	if (data.value) {
+		out = trimNBTJSON(data.value)
+	}
+	
+	else if (typeof data == "object") {
+		out = Array.isArray(data) ? [] : {}
+		
+		for (let key in data) {
+			let value = data[key]
+			
+			out[key] = trimNBTJSON( value )
+		}
+	}
+	
+	return out
+}
+</script>
+
+
+<script>
+const nbt = require("prismarine-nbt")
+const { Buffer } = require("buffer")
+
+async function getNBTJSON (data) {
+	let buffer = Buffer.from(data)
+	let value = await nbt.parse(buffer)
+	
+	let { parsed, metadata } = value
+	
+	if (parsed.value.entities) {
+		console.warn( "Unfortunately, this app currently doesn't support Java edition structure files." )
+		return null
+	}
+	
+	return parsed
+}
+
+function onFileUpload (elem) {
+	let [ file0 ] = elem.files
+	
+	let fileReader = new FileReader()
+
+	fileReader.onload = async function (e) {
+		let nbtJSON = await getNBTJSON( e.target.result )
+		let nbtJSONTrim = trimNBTJSON( nbtJSONRaw ) 
+		
+		//console.log( nbtJSON )
+		
+		onNBTJSONLoad( nbtJSONTrim )
+	}
+
+	fileReader.readAsArrayBuffer(file0)
+
+}
+
+</script>
+
+<script>
+
+function onNBTJSONLoad (data) {
+	result.value = JSON.stringify( data, null, "\n" )
+}
+
+</script>
+
+</body>
+
+</html>
